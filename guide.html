@@ -8,6 +8,12 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
     .page { max-width: 860px; margin: 0 auto; padding: 40px 16px 80px; }
+    .nav { background: #fff; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; }
+    .nav-inner { max-width: 860px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 4px; height: 48px; }
+    .nav-logo { font-size: 14px; font-weight: 600; margin-right: 16px; color: #1a1a1a; text-decoration: none; }
+    .nav-link { font-size: 13px; padding: 6px 12px; border-radius: 8px; text-decoration: none; color: #888; transition: background 0.12s; }
+    .nav-link:hover { background: #f5f5f5; color: #1a1a1a; }
+    .nav-link.active { background: #1a1a1a; color: #fff; }
     h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
     .subtitle { font-size: 14px; color: #666; margin-bottom: 36px; }
 
@@ -67,6 +73,13 @@
   </style>
 </head>
 <body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="/">🐍 Python Class</a>
+    <a class="nav-link" href="/index.html">파이썬 학습</a>
+    <a class="nav-link active" href="/guide.html">배포 가이드</a>
+  </div>
+</nav>
 <div class="page">
   <h1>웹 프로젝트 배포 가이드</h1>
   <p class="subtitle">코드 작성 → GitHub 커밋 → Vercel 배포까지의 전체 절차와 오류 대처법</p>
