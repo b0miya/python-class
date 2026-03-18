@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>파이썬 기초 학습</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+    h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .subtitle { font-size: 14px; color: #666; margin-bottom: 24px; }
+    .wrap { display: flex; height: 620px; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .sidebar { width: 200px; border-right: 1px solid #e0e0e0; overflow-y: auto; flex-shrink: 0; background: #fafafa; }
+    .sidebar-header { padding: 14px 16px; border-bottom: 1px solid #e0e0e0; }
+    .sidebar-header p { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.06em; text-transform: uppercase; }
+    .lesson-item { padding: 10px 16px; cursor: pointer; border-left: 2px solid transparent; display: flex; align-items: center; gap: 10px; transition: background 0.12s; }
+    .lesson-item:hover { background: #fff; }
+    .lesson-item.active { background: #fff; border-left: 2px solid #1a1a1a; }
+    .lesson-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; background: #fff; border: 1px solid #e0e0e0; color: #888; }
+    .lesson-item.active .lesson-icon { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .lesson-label { font-size: 13px; color: #1a1a1a; line-height: 1.3; }
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .tabs { display: flex; border-bottom: 1px solid #e0e0e0; padding: 0 20px; flex-shrink: 0; background: #fff; }
+    .tab-btn { border: none; background: none; padding: 13px 0; margin-right: 24px; font-size: 13px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; font-weight: 400; }
+    .tab-btn.active { color: #1a1a1a; border-bottom: 2px solid #1a1a1a; font-weight: 600; }
+    .content { flex: 1; overflow-y: auto; padding: 22px 24px; }
+    .badge { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 99px; background: #f0f0f0; color: #888; margin-bottom: 14px; }
+    .lesson-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+    .section-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .section-desc { font-size: 13px; line-height: 1.75; color: #555; margin-bottom: 10px; }
+    pre.code-block { background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: 12px; line-height: 1.7; overflow-x: auto; color: #1a1a1a; margin-bottom: 22px; }
+    .section-block { margin-bottom: 6px; }
+    .q-box { background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.75; margin-bottom: 16px; }
+    .hint-box { background: #fffbec; border: 1px solid #f0e0a0; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #7a5f00; margin-bottom: 14px; }
+    textarea.code-input { width: 100%; min-height: 150px; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: 12px; line-height: 1.7; padding: 12px 14px; border-radius: 8px; border: 1px solid #ddd; background: #f8f8f8; color: #1a1a1a; resize: vertical; outline: none; transition: border 0.15s; }
+    textarea.code-input:focus { border-color: #1a1a1a; background: #fff; }
+    .btn-row { display: flex; gap: 8px; margin-top: 12px; }
+    button { padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; cursor: pointer; color: #1a1a1a; transition: background 0.12s; font-family: inherit; }
+    button:hover { background: #f0f0f0; }
+    button.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    button.primary:hover { background: #333; }
+    .feedback-box { margin-top: 16px; background: #f0faf4; border: 1px solid #b2e0c5; border-radius: 8px; padding: 14px 16px; }
+    .feedback-label { font-size: 12px; font-weight: 600; color: #1e7a44; margin-bottom: 6px; }
+    .feedback-text { font-size: 13px; line-height: 1.75; color: #1e5c33; }
+    .error-box { margin-top: 16px; background: #fff0f0; border: 1px solid #ffc0c0; border-radius: 8px; padding: 14px 16px; font-size: 13px; color: #c00; }
+    .loading-box { padding: 14px 0; font-size: 13px; color: #888; }
+    .next-btn-wrap { margin-top: 22px; padding-top: 18px; border-top: 1px solid #e8e8e8; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <h1>🐍 파이썬 기초 학습</h1>
+  <p class="subtitle">개념을 배우고, 직접 코드를 작성해 AI 피드백을 받아보세요</p>
+  <div class="wrap">
+    <div class="sidebar">
+      <div class="sidebar-header"><p>커리큘럼</p></div>
+      <div id="lesson-list"></div>
+    </div>
+    <div class="main">
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-learn" onclick="switchTab('learn')">개념 학습</button>
+        <button class="tab-btn" id="tab-exercise" onclick="switchTab('exercise')">연습 문제</button>
+      </div>
+      <div class="content" id="main-content"></div>
+    </div>
+  </div>
+</div>
+<script>
+const lessons = [
+  {
+    id: 1, label: "변수와 자료형",
+    sections: [
+      { title: "변수란?", desc: "변수는 데이터를 저장하는 공간입니다. 파이썬에서는 자료형을 미리 선언하지 않고 바로 값을 할당합니다.", code: `name = "홍길동"\nage = 20\nheight = 172.5\nis_student = True\n\nprint(name)    # 홍길동\nprint(age)     # 20\nprint(height)  # 172.5` },
+      { title: "자료형의 종류", desc: "파이썬의 기본 자료형: 정수(int), 실수(float), 문자열(str), 불리언(bool)", code: `x = 10        # int  (정수)\ny = 3.14      # float (실수)\nz = "Hello"   # str  (문자열)\nb = True      # bool (불리언)\n\nprint(type(x))  # <class 'int'>\nprint(type(z))  # <class 'str'>` }
+    ],
+    exercise: { q: "본인의 이름, 나이, 좋아하는 과목을 각각 변수에 저장하고 print()로 출력하는 코드를 작성하세요.", hint: "name, age, subject 변수를 만들어 값을 할당하고 print(name), print(age), print(subject)를 써보세요." }
+  },
+  {
+    id: 2, label: "조건문",
+    sections: [
+      { title: "if / elif / else", desc: "조건이 참(True)이면 해당 블록을 실행합니다. 들여쓰기(4칸 또는 탭)가 매우 중요합니다.", code: `score = 85\n\nif score >= 90:\n    print("A 등급")\nelif score >= 80:\n    print("B 등급")\nelif score >= 70:\n    print("C 등급")\nelse:\n    print("F 등급")\n\n# 결과: B 등급` },
+      { title: "비교 연산자", desc: "조건문에 사용하는 비교 연산자입니다.", code: `# ==  같다\n# !=  같지 않다\n# >   크다\n# <   작다\n# >=  크거나 같다\n# <=  작거나 같다\n\nx = 10\nprint(x == 10)  # True\nprint(x > 5)    # True\nprint(x != 10)  # False` }
+    ],
+    exercise: { q: "변수 age에 나이를 저장하고, 18세 미만이면 '미성년자', 18세 이상이면 '성인'이라고 출력하는 코드를 작성하세요.", hint: "if age < 18: 으로 시작해서 else: 로 나머지 경우를 처리하세요." }
+  },
+  {
+    id: 3, label: "반복문",
+    sections: [
+      { title: "for 반복문", desc: "정해진 횟수나 리스트의 요소를 순서대로 반복합니다.", code: `# range()로 숫자 반복\nfor i in range(5):\n    print(i)  # 0, 1, 2, 3, 4\n\n# 리스트 순회\nfruits = ["사과", "바나나", "딸기"]\nfor fruit in fruits:\n    print(fruit)` },
+      { title: "while 반복문", desc: "조건이 참인 동안 계속 반복합니다. 무한 루프에 주의하세요!", code: `count = 0\nwhile count < 5:\n    print(f"횟수: {count}")\n    count += 1  # count = count + 1\n\nprint("완료!")` }
+    ],
+    exercise: { q: "for 반복문과 range()를 사용해서 1부터 10까지의 합계를 구하고 출력하는 코드를 작성하세요.", hint: "total = 0 으로 시작해서, range(1, 11) 안에서 total += i 로 더해 나가세요." }
+  },
+  {
+    id: 4, label: "함수",
+    sections: [
+      { title: "함수 정의와 호출", desc: "def 키워드로 함수를 정의합니다. 함수는 코드를 재사용할 수 있게 해줍니다.", code: `def greet(name):\n    print(f"안녕하세요, {name}님!")\n\ngreet("민수")   # 안녕하세요, 민수님!\ngreet("지영")   # 안녕하세요, 지영님!` },
+      { title: "return 반환값", desc: "return을 사용해 함수의 결과값을 돌려줄 수 있습니다.", code: `def add(a, b):\n    return a + b\n\nresult = add(3, 5)\nprint(result)  # 8\n\ndef is_even(n):\n    return n % 2 == 0\n\nprint(is_even(4))  # True\nprint(is_even(7))  # False` }
+    ],
+    exercise: { q: "두 수를 매개변수로 받아 더 큰 수를 반환하는 함수 max_num(a, b)을 작성하고, 몇 가지 경우를 테스트해 보세요.", hint: "def max_num(a, b): 로 시작하고 if a > b: return a, else: return b 로 처리해보세요." }
+  },
+  {
+    id: 5, label: "리스트",
+    sections: [
+      { title: "리스트 기본 사용법", desc: "리스트는 [ ] 안에 여러 값을 저장합니다. 인덱스는 0부터 시작합니다.", code: `numbers = [10, 20, 30, 40, 50]\n\nprint(numbers[0])   # 10  (첫 번째)\nprint(numbers[-1])  # 50  (마지막)\nprint(len(numbers)) # 5   (길이)\n\nnumbers.append(60)  # 추가\nnumbers.remove(30)  # 삭제\nprint(numbers)` },
+      { title: "리스트 슬라이싱", desc: "콜론(:)으로 리스트의 일부를 잘라낼 수 있습니다.", code: `data = [1, 2, 3, 4, 5]\n\nprint(data[1:3])   # [2, 3]\nprint(data[:2])    # [1, 2]\nprint(data[2:])    # [3, 4, 5]\nprint(data[::-1])  # [5, 4, 3, 2, 1] (역순)` }
+    ],
+    exercise: { q: "5개의 숫자가 담긴 리스트를 만들고, 리스트의 합계, 최댓값, 최솟값을 각각 출력하는 코드를 작성하세요.", hint: "sum(), max(), min() 내장 함수를 활용해 보세요." }
+  },
+  {
+    id: 6, label: "딕셔너리",
+    sections: [
+      { title: "딕셔너리 기본", desc: "딕셔너리는 키(key): 값(value) 쌍으로 데이터를 저장합니다.", code: `student = {\n    "name": "홍길동",\n    "age": 20,\n    "grade": "A"\n}\n\nprint(student["name"])  # 홍길동\nstudent["score"] = 95\nprint(student)` },
+      { title: "딕셔너리 메서드", desc: "keys(), values(), items()로 딕셔너리의 내용을 순회할 수 있습니다.", code: `info = {"a": 1, "b": 2, "c": 3}\n\nfor key, val in info.items():\n    print(f"{key}: {val}")` }
+    ],
+    exercise: { q: "본인의 정보(이름, 나이, 취미, 좋아하는 색)를 딕셔너리로 만들고, for문으로 모든 키와 값을 출력하는 코드를 작성하세요.", hint: "info = {'name': ..., ...} 를 만들고 for k, v in info.items(): 로 순회해보세요." }
+  }
+];
+
+let currentLesson = 0, currentTab = 'learn', showHint = false;
+
+function renderSidebar() {
+  document.getElementById('lesson-list').innerHTML = lessons.map((l, i) => `
+    <div class="lesson-item ${i===currentLesson?'active':''}" onclick="selectLesson(${i})">
+      <div class="lesson-icon">${i+1}</div>
+      <span class="lesson-label">${l.label}</span>
+    </div>`).join('');
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-learn').className = 'tab-btn'+(tab==='learn'?' active':'');
+  document.getElementById('tab-exercise').className = 'tab-btn'+(tab==='exercise'?' active':'');
+  renderContent();
+}
+
+function selectLesson(i) {
+  currentLesson = i; showHint = false;
+  renderSidebar(); switchTab('learn');
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderContent() {
+  const lesson = lessons[currentLesson];
+  const el = document.getElementById('main-content');
+  if (currentTab === 'learn') {
+    el.innerHTML = `
+      <span class="badge">단원 ${currentLesson+1} / ${lessons.length}</span>
+      <div class="lesson-title">${lesson.label}</div>
+      ${lesson.sections.map(s=>`
+        <div class="section-block">
+          <div class="section-title">${s.title}</div>
+          <div class="section-desc">${s.desc}</div>
+          <pre class="code-block">${esc(s.code)}</pre>
+        </div>`).join('')}
+      <div class="next-btn-wrap">
+        <button class="primary" onclick="switchTab('exercise')">연습 문제 풀기 →</button>
+      </div>`;
+  } else {
+    el.innerHTML = `
+      <span class="badge">연습 문제</span>
+      <div class="lesson-title">${lesson.label}</div>
+      <div class="q-box">${lesson.exercise.q}</div>
+      <div id="hint-area" style="display:${showHint?'block':'none'}">
+        <div class="hint-box">💡 힌트: ${lesson.exercise.hint}</div>
+      </div>
+      <textarea class="code-input" id="student-code" placeholder="# 여기에 파이썬 코드를 작성하세요&#10;"></textarea>
+      <div class="btn-row">
+        <button class="primary" onclick="submitCode()">채점하기</button>
+        <button onclick="toggleHint()">힌트 보기</button>
+      </div>
+      <div id="feedback-area"></div>`;
+  }
+}
+
+function toggleHint() {
+  showHint = !showHint;
+  const el = document.getElementById('hint-area');
+  if (el) el.style.display = showHint ? 'block' : 'none';
+}
+
+async function submitCode() {
+  const code = document.getElementById('student-code')?.value.trim();
+  if (!code) return;
+  const area = document.getElementById('feedback-area');
+  area.innerHTML = '<div class="loading-box">AI 선생님이 코드를 확인하고 있습니다...</div>';
+  const lesson = lessons[currentLesson];
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: `당신은 친절한 파이썬 선생님입니다.\n\n연습 문제: ${lesson.exercise.q}\n\n학생 코드:\n\`\`\`python\n${code}\n\`\`\`\n\n아래 형식으로 한국어로 피드백해주세요 (3~5문장):\n- 코드가 문제를 올바르게 해결했는지 여부\n- 잘된 점\n- 개선할 점 또는 다른 방법 (있다면)\n- 응원의 말\n\n이모지를 2~3개 사용해서 친근하게 작성해주세요.` }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.find(b=>b.type==='text')?.text || '피드백을 불러올 수 없습니다.';
+    area.innerHTML = `<div class="feedback-box"><div class="feedback-label">AI 선생님 피드백</div><div class="feedback-text">${text.replace(/\n/g,'<br>')}</div></div>`;
+  } catch(e) {
+    area.innerHTML = '<div class="error-box">오류가 발생했습니다. 다시 시도해주세요.</div>';
+  }
+}
+
+renderSidebar();
+renderContent();
+</script>
+</body>
+</html>
