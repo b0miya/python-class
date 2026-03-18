@@ -4,42 +4,132 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>파이썬 기초 학습</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
-    .page { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+    body { font-family: 'Noto Sans KR', -apple-system, sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
+
+    /* ── NAV ── */
     .nav { background: #fff; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; }
     .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 4px; height: 48px; }
-    .nav-logo { font-size: 14px; font-weight: 600; margin-right: 16px; color: #1a1a1a; text-decoration: none; }
+    .nav-logo { font-size: 14px; font-weight: 700; margin-right: 16px; color: #1a1a1a; text-decoration: none; }
     .nav-link { font-size: 13px; padding: 6px 12px; border-radius: 8px; text-decoration: none; color: #888; transition: background 0.12s; }
     .nav-link:hover { background: #f5f5f5; color: #1a1a1a; }
     .nav-link.active { background: #1a1a1a; color: #fff; }
-    h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
     .subtitle { font-size: 14px; color: #666; margin-bottom: 24px; }
-    .wrap { display: flex; height: 620px; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-    .sidebar { width: 200px; border-right: 1px solid #e0e0e0; overflow-y: auto; flex-shrink: 0; background: #fafafa; }
+    .wrap { display: flex; height: 700px; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 210px; border-right: 1px solid #e0e0e0; overflow-y: auto; flex-shrink: 0; background: #fafafa; }
     .sidebar-header { padding: 14px 16px; border-bottom: 1px solid #e0e0e0; }
-    .sidebar-header p { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.06em; text-transform: uppercase; }
+    .sidebar-header p { font-size: 11px; font-weight: 700; color: #999; letter-spacing: 0.06em; text-transform: uppercase; }
     .lesson-item { padding: 10px 16px; cursor: pointer; border-left: 2px solid transparent; display: flex; align-items: center; gap: 10px; transition: background 0.12s; }
     .lesson-item:hover { background: #fff; }
     .lesson-item.active { background: #fff; border-left: 2px solid #1a1a1a; }
-    .lesson-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; background: #fff; border: 1px solid #e0e0e0; color: #888; }
-    .lesson-item.active .lesson-icon { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
-    .lesson-label { font-size: 13px; color: #1a1a1a; line-height: 1.3; }
+    .lesson-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; background: #fff; border: 1px solid #e0e0e0; }
+    .lesson-item.active .lesson-icon { background: #1a1a1a; border-color: #1a1a1a; }
+    .lesson-label { font-size: 13px; color: #1a1a1a; line-height: 1.3; font-weight: 500; }
+
+    /* ── MAIN ── */
     .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
     .tabs { display: flex; border-bottom: 1px solid #e0e0e0; padding: 0 20px; flex-shrink: 0; background: #fff; }
-    .tab-btn { border: none; background: none; padding: 13px 0; margin-right: 24px; font-size: 13px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; font-weight: 400; }
-    .tab-btn.active { color: #1a1a1a; border-bottom: 2px solid #1a1a1a; font-weight: 600; }
-    .content { flex: 1; overflow-y: auto; padding: 22px 24px; }
+    .tab-btn { border: none; background: none; padding: 13px 0; margin-right: 24px; font-size: 13px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; font-weight: 400; font-family: inherit; transition: color 0.12s; }
+    .tab-btn.active { color: #1a1a1a; border-bottom: 2px solid #1a1a1a; font-weight: 700; }
+    .content { flex: 1; overflow-y: auto; padding: 24px 28px; }
+
+    /* ── LEARN CONTENT STYLES ── */
+    .lesson-badge { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 99px; background: #f0f0f0; color: #888; margin-bottom: 10px; }
+    .lesson-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+    .learn-subtitle { font-size: 14px; font-weight: 700; color: #1a1a1a; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+    .learn-subtitle::after { content: ''; flex: 1; height: 1px; background: #e8e8e8; }
+    .learn-subtitle .toggle-icon { font-size: 11px; color: #aaa; margin-left: 4px; transition: transform 0.2s; }
+    .learn-subtitle.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .collapsible-body { overflow: hidden; transition: max-height 0.3s ease; }
+    .collapsible-body.collapsed { max-height: 0 !important; }
+
+    /* callouts */
+    .callout { border-radius: 8px; padding: 12px 16px; margin: 0 0 16px; display: flex; gap: 12px; font-size: 13px; line-height: 1.7; }
+    .callout-info { background: #f0f7ff; border: 1px solid #c5deff; }
+    .callout-warn { background: #fffbec; border: 1px solid #f0e0a0; }
+    .callout-tip  { background: #f0faf4; border: 1px solid #b2e0c5; }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout-body { color: #555; }
+    .callout-body strong { color: #1a1a1a; }
+
+    /* code blocks */
+    .code-wrap { margin: 0 0 16px; border-radius: 8px; overflow: hidden; border: 1px solid #e0e0e0; }
+    .code-header { background: #f5f5f5; padding: 7px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
+    .code-filename { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #888; }
+    .copy-btn { font-size: 11px; background: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 2px 8px; color: #666; cursor: pointer; font-family: inherit; transition: background 0.12s; }
+    .copy-btn:hover { background: #e8e8e8; }
+    .copy-btn.copied { background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32; }
+    pre.code-block { background: #f8f8f8; padding: 14px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.75; overflow-x: auto; color: #1a1a1a; margin: 0; }
+    .kw   { color: #d73a49; }
+    .fn   { color: #6f42c1; }
+    .str  { color: #032f62; }
+    .num  { color: #005cc5; }
+    .cmt  { color: #6a737d; font-style: italic; }
+    .var  { color: #e36209; }
+    .cls  { color: #e36209; font-weight: 600; }
+
+    /* output */
+    .output-box { background: #f0fff4; border: 1px solid #c3e6cb; border-left: 3px solid #28a745; border-radius: 0 6px 6px 0; padding: 10px 14px; margin: -12px 0 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #155724; }
+    .output-label { font-size: 10px; color: #888; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; font-family: 'Noto Sans KR', sans-serif; }
+
+    /* table */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 0 0 16px; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; }
+    .data-table th { background: #f5f5f5; padding: 9px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #666; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 1px solid #e0e0e0; }
+    .data-table td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; color: #333; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #fafafa; }
+    .data-table td code { background: #eef2ff; color: #3730a3; padding: 1px 5px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; }
+
+    /* op chips */
+    .op-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+    .op-chip { background: #fff; border: 1px solid #e0e0e0; border-radius: 7px; padding: 6px 12px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #c55; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .op-chip span { color: #888; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; }
+
+    /* truth table */
+    .truth-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 0 16px; }
+    .truth-table { border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; font-size: 12px; }
+    .truth-table th { background: #f5f5f5; padding: 7px 10px; color: #666; font-size: 11px; font-weight: 700; border-bottom: 1px solid #e0e0e0; }
+    .truth-table td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; font-family: 'JetBrains Mono', monospace; text-align: center; }
+    .truth-table tr:last-child td { border-bottom: none; }
+    .t-true  { color: #166534; font-weight: 700; }
+    .t-false { color: #991b1b; font-weight: 700; }
+
+    /* flow */
+    .flow-diagram { display: flex; align-items: center; flex-wrap: wrap; gap: 0; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 10px; padding: 16px; margin: 0 0 16px; justify-content: center; }
+    .flow-step { background: #fff; border: 1px solid #e0e0e0; border-radius: 7px; padding: 10px 14px; font-size: 12px; font-weight: 600; text-align: center; min-width: 90px; }
+    .flow-step small { display: block; font-size: 10px; color: #999; margin-top: 2px; font-weight: 400; }
+    .flow-step.hl { border-color: #6366f1; background: #eef2ff; color: #4f46e5; }
+    .flow-arrow { color: #ccc; font-size: 16px; padding: 0 4px; }
+
+    /* concept cards */
+    .concept-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin: 0 0 16px; }
+    .concept-card { background: #fafafa; border: 1px solid #e8e8e8; border-top: 3px solid #e8e8e8; border-radius: 8px; padding: 14px; }
+    .concept-card.blue  { border-top-color: #3b82f6; }
+    .concept-card.green { border-top-color: #22c55e; }
+    .concept-card.purple{ border-top-color: #a855f7; }
+    .concept-card.orange{ border-top-color: #f97316; }
+    .concept-card.red   { border-top-color: #ef4444; }
+    .concept-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .concept-card p { font-size: 12px; color: #666; line-height: 1.6; }
+    .concept-card code { background: #eef2ff; color: #4338ca; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+    /* next btn */
+    .next-btn-wrap { margin-top: 28px; padding-top: 20px; border-top: 1px solid #e8e8e8; display: flex; gap: 8px; }
+
+    /* ── EXERCISE STYLES ── */
     .badge { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 99px; background: #f0f0f0; color: #888; margin-bottom: 14px; }
-    .lesson-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
-    .section-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-    .section-desc { font-size: 13px; line-height: 1.75; color: #555; margin-bottom: 10px; }
-    pre.code-block { background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: 12px; line-height: 1.7; overflow-x: auto; color: #1a1a1a; margin-bottom: 22px; }
-    .section-block { margin-bottom: 6px; }
     .q-box { background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.75; margin-bottom: 16px; }
     .hint-box { background: #fffbec; border: 1px solid #f0e0a0; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #7a5f00; margin-bottom: 14px; }
-    textarea.code-input { width: 100%; min-height: 150px; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: 12px; line-height: 1.7; padding: 12px 14px; border-radius: 8px; border: 1px solid #ddd; background: #f8f8f8; color: #1a1a1a; resize: vertical; outline: none; transition: border 0.15s; }
+    textarea.code-input { width: 100%; min-height: 150px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7; padding: 12px 14px; border-radius: 8px; border: 1px solid #ddd; background: #f8f8f8; color: #1a1a1a; resize: vertical; outline: none; transition: border 0.15s; }
     textarea.code-input:focus { border-color: #1a1a1a; background: #fff; }
     .btn-row { display: flex; gap: 8px; margin-top: 12px; }
     button { padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; cursor: pointer; color: #1a1a1a; transition: background 0.12s; font-family: inherit; }
@@ -47,13 +137,17 @@
     button.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
     button.primary:hover { background: #333; }
     .feedback-box { margin-top: 16px; background: #f0faf4; border: 1px solid #b2e0c5; border-radius: 8px; padding: 14px 16px; }
-    .feedback-label { font-size: 12px; font-weight: 600; color: #1e7a44; margin-bottom: 6px; }
+    .feedback-label { font-size: 12px; font-weight: 700; color: #1e7a44; margin-bottom: 6px; }
     .feedback-text { font-size: 13px; line-height: 1.75; color: #1e5c33; }
     .error-box { margin-top: 16px; background: #fff0f0; border: 1px solid #ffc0c0; border-radius: 8px; padding: 14px 16px; font-size: 13px; color: #c00; }
     .loading-box { padding: 14px 0; font-size: 13px; color: #888; }
-    .next-btn-wrap { margin-top: 22px; padding-top: 18px; border-top: 1px solid #e8e8e8; }
-    .content.no-pad { padding: 0; }
-    .content.no-pad iframe { width: 100%; height: 100%; border: none; display: block; }
+
+    @media (max-width: 640px) {
+      .truth-grid { grid-template-columns: 1fr; }
+      .wrap { height: auto; flex-direction: column; }
+      .sidebar { width: 100%; height: 120px; border-right: none; border-bottom: 1px solid #e0e0e0; display: flex; overflow-x: auto; }
+      .sidebar-header { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -75,118 +169,527 @@
     <div class="main">
       <div class="tabs">
         <button class="tab-btn active" id="tab-learn" onclick="switchTab('learn')">개념 학습</button>
-        <button class="tab-btn" id="tab-concept" onclick="switchTab('concept')">📖 개념 정리</button>
         <button class="tab-btn" id="tab-exercise" onclick="switchTab('exercise')">연습 문제</button>
       </div>
       <div class="content" id="main-content"></div>
     </div>
   </div>
 </div>
+
 <script>
+/* ─────────────────────────────────────────
+   헬퍼
+───────────────────────────────────────── */
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function codeBlock(filename, code){
+  const id = 'cb_' + Math.random().toString(36).slice(2);
+  return `<div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">${filename}</span>
+      <button class="copy-btn" onclick="copyCode('${id}',this)">복사</button>
+    </div>
+    <pre class="code-block" id="${id}">${code}</pre>
+  </div>`;
+}
+
+function callout(type, icon, html){
+  return `<div class="callout callout-${type}"><span class="callout-icon">${icon}</span><div class="callout-body">${html}</div></div>`;
+}
+
+function subtitle(text){
+  return `<div class="learn-subtitle" onclick="toggleSection(this)">
+    ${text} <span class="toggle-icon">▼</span>
+  </div><div class="collapsible-body">`;
+}
+const endSection = `</div>`; // closes collapsible-body
+
+/* ─────────────────────────────────────────
+   레슨 데이터
+───────────────────────────────────────── */
 const lessons = [
+  /* ══ 01. 변수와 자료형 ══ */
   {
-    id: 1, label: "변수와 자료형", basicsAnchor: "#variable",
-    sections: [
-      { title: "변수란?", desc: "변수는 데이터를 저장하는 공간입니다. 파이썬에서는 자료형을 미리 선언하지 않고 바로 값을 할당합니다.", code: `name = "홍길동"\nage = 20\nheight = 172.5\nis_student = True\n\nprint(name)    # 홍길동\nprint(age)     # 20\nprint(height)  # 172.5` },
-      { title: "자료형의 종류", desc: "파이썬의 기본 자료형: 정수(int), 실수(float), 문자열(str), 불리언(bool)", code: `x = 10        # int  (정수)\ny = 3.14      # float (실수)\nz = "Hello"   # str  (문자열)\nb = True      # bool (불리언)\n\nprint(type(x))  # <class 'int'>\nprint(type(z))  # <class 'str'>` }
-    ],
+    id: 1, label: "변수와 자료형", icon: "📦",
+    learnHTML: () => `
+      ${callout('info','💡','<strong>변수(Variable)</strong>는 데이터를 저장하고 나중에 참조하기 위한 <strong>기억 공간</strong>입니다.<br>대입 연산자 <code>=</code>를 사용해 값을 저장합니다.')}
+
+      ${subtitle('🗂 파이썬 자료형 종류')}
+      <table class="data-table">
+        <thead><tr><th>구분</th><th>자료형</th><th>예시</th><th>특징</th></tr></thead>
+        <tbody>
+          <tr><td>단일형</td><td><strong>정수형</strong> int</td><td><code>-100, 0, 100</code></td><td>소수점 없는 정수</td></tr>
+          <tr><td>단일형</td><td><strong>실수형</strong> float</td><td><code>-3.5, 1.246</code></td><td>소수점 포함 실수</td></tr>
+          <tr><td>단일형</td><td><strong>문자열형</strong> str</td><td><code>'hello', "정보"</code></td><td>따옴표로 감싸서 표현</td></tr>
+          <tr><td>단일형</td><td><strong>불리언형</strong> bool</td><td><code>True, False</code></td><td>참/거짓 판단 자료</td></tr>
+          <tr><td>컨테이너</td><td><strong>리스트</strong> list</td><td><code>[1, 2, 3]</code></td><td>순서 있음, 변경 가능, 대괄호</td></tr>
+          <tr><td>컨테이너</td><td><strong>튜플</strong> tuple</td><td><code>(10, 20, 30)</code></td><td>괄호로 묶음, 수정 불가</td></tr>
+          <tr><td>컨테이너</td><td><strong>딕셔너리</strong> dict</td><td><code>{'사과':'apple'}</code></td><td>키:값 쌍, 순서 있음</td></tr>
+          <tr><td>컨테이너</td><td><strong>집합</strong> set</td><td><code>{'Python', 'Java'}</code></td><td>순서 없음, 중복 불가</td></tr>
+        </tbody>
+      </table>
+      ${endSection}
+
+      ${subtitle('💻 코드 예시 — 자료형 확인')}
+      ${codeBlock('자료형 확인.py', `<span class="var">a</span> = <span class="num">100</span>          <span class="cmt"># int</span>
+<span class="var">b</span> = <span class="num">3.1415</span>       <span class="cmt"># float</span>
+<span class="var">c</span> = <span class="str">'Python'</span>     <span class="cmt"># str</span>
+<span class="var">d</span> = <span class="kw">True</span>         <span class="cmt"># bool</span>
+
+<span class="fn">print</span>(<span class="var">a</span>, <span class="fn">type</span>(<span class="var">a</span>))
+<span class="fn">print</span>(<span class="var">b</span>, <span class="fn">type</span>(<span class="var">b</span>))
+<span class="fn">print</span>(<span class="var">c</span>, <span class="fn">type</span>(<span class="var">c</span>))
+<span class="fn">print</span>(<span class="var">d</span>, <span class="fn">type</span>(<span class="var">d</span>))`)}
+      <div class="output-box">
+        <div class="output-label">▶ 실행 결과</div>
+        100 &lt;class 'int'&gt;<br>3.1415 &lt;class 'float'&gt;<br>Python &lt;class 'str'&gt;<br>True &lt;class 'bool'&gt;
+      </div>
+      ${endSection}
+
+      ${subtitle('🔢 산술 연산자')}
+      <div class="op-chips">
+        <div class="op-chip"><code>+</code><span>덧셈</span></div>
+        <div class="op-chip"><code>-</code><span>뺄셈</span></div>
+        <div class="op-chip"><code>*</code><span>곱셈</span></div>
+        <div class="op-chip"><code>/</code><span>나눗셈</span></div>
+        <div class="op-chip"><code>//</code><span>몫</span></div>
+        <div class="op-chip"><code>%</code><span>나머지</span></div>
+        <div class="op-chip"><code>**</code><span>거듭제곱</span></div>
+        <div class="op-chip" style="color:#7c3aed"><code>+=</code><span>x = x+n</span></div>
+        <div class="op-chip" style="color:#7c3aed"><code>-=</code><span>x = x-n</span></div>
+        <div class="op-chip" style="color:#7c3aed"><code>*=</code><span>x = x*n</span></div>
+      </div>
+      ${endSection}
+
+      ${subtitle('⚡ 논리 연산자 진리표')}
+      <div class="truth-grid">
+        <table class="truth-table"><thead><tr><th>A</th><th>B</th><th>A AND B</th></tr></thead>
+          <tbody>
+            <tr><td class="t-false">False</td><td class="t-false">False</td><td class="t-false">False</td></tr>
+            <tr><td class="t-false">False</td><td class="t-true">True</td><td class="t-false">False</td></tr>
+            <tr><td class="t-true">True</td><td class="t-false">False</td><td class="t-false">False</td></tr>
+            <tr><td class="t-true">True</td><td class="t-true">True</td><td class="t-true">True</td></tr>
+          </tbody>
+        </table>
+        <table class="truth-table"><thead><tr><th>A</th><th>B</th><th>A OR B</th></tr></thead>
+          <tbody>
+            <tr><td class="t-false">False</td><td class="t-false">False</td><td class="t-false">False</td></tr>
+            <tr><td class="t-false">False</td><td class="t-true">True</td><td class="t-true">True</td></tr>
+            <tr><td class="t-true">True</td><td class="t-false">False</td><td class="t-true">True</td></tr>
+            <tr><td class="t-true">True</td><td class="t-true">True</td><td class="t-true">True</td></tr>
+          </tbody>
+        </table>
+        <table class="truth-table"><thead><tr><th>A</th><th>NOT A</th></tr></thead>
+          <tbody>
+            <tr><td class="t-true">True</td><td class="t-false">False</td></tr>
+            <tr><td class="t-false">False</td><td class="t-true">True</td></tr>
+          </tbody>
+        </table>
+      </div>
+      ${endSection}
+
+      ${callout('warn','⚠️','<strong>TypeError 주의!</strong> 정수(int)와 문자열(str)을 <code>+</code>로 연산할 수 없습니다.<br>숫자를 입력받을 때는 반드시 <code>int(input(...))</code>로 변환하세요.')}
+    `,
     exercise: { q: "본인의 이름, 나이, 좋아하는 과목을 각각 변수에 저장하고 print()로 출력하는 코드를 작성하세요.", hint: "name, age, subject 변수를 만들어 값을 할당하고 print(name), print(age), print(subject)를 써보세요." }
   },
+
+  /* ══ 02. 조건문 ══ */
   {
-    id: 2, label: "조건문", basicsAnchor: "#control",
-    sections: [
-      { title: "if / elif / else", desc: "조건이 참(True)이면 해당 블록을 실행합니다. 들여쓰기(4칸 또는 탭)가 매우 중요합니다.", code: `score = 85\n\nif score >= 90:\n    print("A 등급")\nelif score >= 80:\n    print("B 등급")\nelif score >= 70:\n    print("C 등급")\nelse:\n    print("F 등급")\n\n# 결과: B 등급` },
-      { title: "비교 연산자", desc: "조건문에 사용하는 비교 연산자입니다.", code: `# ==  같다\n# !=  같지 않다\n# >   크다\n# <   작다\n# >=  크거나 같다\n# <=  작거나 같다\n\nx = 10\nprint(x == 10)  # True\nprint(x > 5)    # True\nprint(x != 10)  # False` }
-    ],
+    id: 2, label: "조건문", icon: "🔀",
+    learnHTML: () => `
+      ${callout('info','💡','<strong>조건문</strong>은 조건이 참(True)이면 해당 블록을 실행합니다.<br><strong>들여쓰기(4칸 또는 탭)</strong>가 블록을 구분하므로 매우 중요합니다.')}
+
+      ${subtitle('① if / elif / else 구조')}
+      <div class="concept-cards">
+        <div class="concept-card blue"><h4>🔹 if</h4><p>조건이 참이면 실행</p></div>
+        <div class="concept-card orange"><h4>🔸 elif</h4><p>앞 조건이 거짓일 때 추가 조건 검사</p></div>
+        <div class="concept-card green"><h4>🔹 else</h4><p>모든 조건이 거짓이면 실행</p></div>
+      </div>
+      ${codeBlock('조건문 기본.py', `<span class="var">score</span> = <span class="num">85</span>
+
+<span class="kw">if</span> <span class="var">score</span> >= <span class="num">90</span>:
+    <span class="fn">print</span>(<span class="str">"A 등급"</span>)
+<span class="kw">elif</span> <span class="var">score</span> >= <span class="num">80</span>:
+    <span class="fn">print</span>(<span class="str">"B 등급"</span>)
+<span class="kw">elif</span> <span class="var">score</span> >= <span class="num">70</span>:
+    <span class="fn">print</span>(<span class="str">"C 등급"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"F 등급"</span>)`)}
+      <div class="output-box"><div class="output-label">▶ 실행 결과</div>B 등급</div>
+      ${endSection}
+
+      ${subtitle('② 비교 연산자')}
+      <div class="op-chips">
+        <div class="op-chip"><code>==</code><span>같다</span></div>
+        <div class="op-chip"><code>!=</code><span>같지 않다</span></div>
+        <div class="op-chip"><code>&gt;</code><span>크다</span></div>
+        <div class="op-chip"><code>&lt;</code><span>작다</span></div>
+        <div class="op-chip"><code>&gt;=</code><span>크거나 같다</span></div>
+        <div class="op-chip"><code>&lt;=</code><span>작거나 같다</span></div>
+      </div>
+      ${codeBlock('비교 연산자.py', `<span class="var">number</span> = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">'숫자를 입력하세요: '</span>))
+<span class="kw">if</span> <span class="var">number</span> % <span class="num">2</span> == <span class="num">0</span>:
+    <span class="fn">print</span>(<span class="var">number</span>, <span class="str">'는 짝수입니다.'</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="var">number</span>, <span class="str">'는 홀수입니다.'</span>)`)}
+      ${endSection}
+
+      ${subtitle('③ 중첩 조건문')}
+      ${callout('tip','✅','<strong>중첩 조건문</strong>은 if 안에 if가 들어가는 형태입니다. <strong>들여쓰기</strong>로 계층을 구분합니다.')}
+      ${codeBlock('중첩 if.py', `<span class="var">나이</span> = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">'나이를 입력하세요: '</span>))
+<span class="var">성별</span> = <span class="fn">input</span>(<span class="str">'성별을 입력하세요: '</span>)
+<span class="var">몸무게</span> = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">'몸무게를 입력하세요: '</span>))
+
+<span class="kw">if</span> <span class="num">16</span> <= <span class="var">나이</span> <= <span class="num">59</span>:
+    <span class="kw">if</span> (<span class="str">'남'</span> <span class="kw">in</span> <span class="var">성별</span>) <span class="kw">and</span> (<span class="var">몸무게</span> >= <span class="num">50</span>):
+        <span class="fn">print</span>(<span class="str">'이 남성분은 헌혈할 수 있습니다.'</span>)
+    <span class="kw">elif</span> (<span class="str">'여'</span> <span class="kw">in</span> <span class="var">성별</span>) <span class="kw">and</span> (<span class="var">몸무게</span> >= <span class="num">45</span>):
+        <span class="fn">print</span>(<span class="str">'이 여성분은 헌혈할 수 있습니다.'</span>)
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="str">'헌혈할 수 없습니다.'</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">'헌혈할 수 없습니다.'</span>)`)}
+      ${endSection}
+    `,
     exercise: { q: "변수 age에 나이를 저장하고, 18세 미만이면 '미성년자', 18세 이상이면 '성인'이라고 출력하는 코드를 작성하세요.", hint: "if age < 18: 으로 시작해서 else: 로 나머지 경우를 처리하세요." }
   },
+
+  /* ══ 03. 반복문 ══ */
   {
-    id: 3, label: "반복문", basicsAnchor: "#loop",
-    sections: [
-      { title: "for 반복문", desc: "정해진 횟수나 리스트의 요소를 순서대로 반복합니다.", code: `# range()로 숫자 반복\nfor i in range(5):\n    print(i)  # 0, 1, 2, 3, 4\n\n# 리스트 순회\nfruits = ["사과", "바나나", "딸기"]\nfor fruit in fruits:\n    print(fruit)` },
-      { title: "while 반복문", desc: "조건이 참인 동안 계속 반복합니다. 무한 루프에 주의하세요!", code: `count = 0\nwhile count < 5:\n    print(f"횟수: {count}")\n    count += 1  # count = count + 1\n\nprint("완료!")` }
-    ],
+    id: 3, label: "반복문", icon: "🔁",
+    learnHTML: () => `
+      ${callout('info','💡','<strong>반복문</strong>은 조건을 만족하는 동안 명령을 반복 실행합니다.<br><code>for</code>는 정해진 범위, <code>while</code>은 조건이 참인 동안 반복합니다.')}
+
+      ${subtitle('① for 문')}
+      <div class="concept-cards">
+        <div class="concept-card blue"><h4>range(n)</h4><p>0 ~ n-1 범위의 정수를 반복</p></div>
+        <div class="concept-card green"><h4>range(a, b)</h4><p>a ~ b-1 범위를 반복</p></div>
+        <div class="concept-card purple"><h4>range(a, b, step)</h4><p>step 간격으로 반복</p></div>
+      </div>
+      ${codeBlock('for문 기본.py', `<span class="cmt"># 0~4 출력</span>
+<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):
+    <span class="fn">print</span>(<span class="var">i</span>)
+
+<span class="cmt"># 리스트 순회</span>
+<span class="var">fruits</span> = [<span class="str">'사과'</span>, <span class="str">'바나나'</span>, <span class="str">'포도'</span>]
+<span class="kw">for</span> <span class="var">fruit</span> <span class="kw">in</span> <span class="var">fruits</span>:
+    <span class="fn">print</span>(<span class="var">fruit</span>)
+
+<span class="cmt"># 구구단 (중첩 for)</span>
+<span class="kw">for</span> <span class="var">dan</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2</span>, <span class="num">10</span>):
+    <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">10</span>):
+        <span class="fn">print</span>(f<span class="str">"{dan} x {i} = {dan * i}"</span>)`)}
+      ${endSection}
+
+      ${subtitle('② while 문')}
+      ${codeBlock('while문.py', `<span class="kw">import</span> <span class="var">random</span>
+<span class="var">count</span> = <span class="num">0</span>
+<span class="var">guess</span> = <span class="num">0</span>
+<span class="var">answer</span> = <span class="var">random</span>.randint(<span class="num">1</span>, <span class="num">100</span>)
+
+<span class="kw">while</span> <span class="var">answer</span> != <span class="var">guess</span>:
+    <span class="var">guess</span> = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">'숫자는 무엇일까요?: '</span>))
+    <span class="var">count</span> += <span class="num">1</span>
+    <span class="kw">if</span> <span class="var">guess</span> > <span class="var">answer</span>:
+        <span class="fn">print</span>(<span class="str">'정답보다 크다.'</span>)
+    <span class="kw">elif</span> <span class="var">guess</span> < <span class="var">answer</span>:
+        <span class="fn">print</span>(<span class="str">'정답보다 작다.'</span>)
+
+<span class="fn">print</span>(f<span class="str">'정답! {count}번 만에 맞혔습니다.'</span>)`)}
+      ${endSection}
+
+      ${subtitle('③ break & continue')}
+      <div class="concept-cards">
+        <div class="concept-card red"><h4>🚫 break</h4><p>반복문을 <strong>완전히 종료</strong>하고 다음 명령으로 이동</p></div>
+        <div class="concept-card blue"><h4>⏭ continue</h4><p>현재 반복만 <strong>건너뛰고</strong> 다음 반복으로 이동</p></div>
+      </div>
+      ${codeBlock('break vs continue.py', `<span class="var">score</span> = [<span class="num">10</span>, <span class="num">20</span>, -<span class="num">10</span>, <span class="num">30</span>]
+
+<span class="cmt"># break: 음수를 만나면 즉시 종료</span>
+<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="var">score</span>:
+    <span class="kw">if</span> <span class="var">i</span> < <span class="num">0</span>: <span class="kw">break</span>
+    <span class="fn">print</span>(<span class="var">i</span>)   <span class="cmt"># 10, 20 출력</span>
+
+<span class="cmt"># continue: 음수만 건너뜀</span>
+<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="var">score</span>:
+    <span class="kw">if</span> <span class="var">i</span> < <span class="num">0</span>: <span class="kw">continue</span>
+    <span class="fn">print</span>(<span class="var">i</span>)   <span class="cmt"># 10, 20, 30 출력</span>`)}
+      ${endSection}
+
+      ${subtitle('④ 무한 루프 (while True)')}
+      ${codeBlock('무한루프.py', `<span class="kw">import</span> <span class="var">random</span>
+<span class="kw">while</span> <span class="kw">True</span>:
+    <span class="var">a</span> = <span class="var">random</span>.randint(<span class="num">1</span>, <span class="num">9</span>)
+    <span class="var">b</span> = <span class="var">random</span>.randint(<span class="num">1</span>, <span class="num">9</span>)
+    <span class="fn">print</span>(<span class="var">a</span>, <span class="str">'*'</span>, <span class="var">b</span>, <span class="str">'= ?'</span>)
+    <span class="var">num</span> = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">'정답 입력: '</span>))
+    <span class="kw">if</span> <span class="var">num</span> == <span class="var">a</span> * <span class="var">b</span>:
+        <span class="fn">print</span>(<span class="str">'정답입니다!'</span>)
+        <span class="kw">break</span>
+    <span class="fn">print</span>(f<span class="str">'틀렸습니다. 정답은 {a * b}입니다.'</span>)`)}
+      ${endSection}
+    `,
     exercise: { q: "for 반복문과 range()를 사용해서 1부터 10까지의 합계를 구하고 출력하는 코드를 작성하세요.", hint: "total = 0 으로 시작해서, range(1, 11) 안에서 total += i 로 더해 나가세요." }
   },
+
+  /* ══ 04. 함수 ══ */
   {
-    id: 4, label: "함수", basicsAnchor: "#function",
-    sections: [
-      { title: "함수 정의와 호출", desc: "def 키워드로 함수를 정의합니다. 함수는 코드를 재사용할 수 있게 해줍니다.", code: `def greet(name):\n    print(f"안녕하세요, {name}님!")\n\ngreet("민수")   # 안녕하세요, 민수님!\ngreet("지영")   # 안녕하세요, 지영님!` },
-      { title: "return 반환값", desc: "return을 사용해 함수의 결과값을 돌려줄 수 있습니다.", code: `def add(a, b):\n    return a + b\n\nresult = add(3, 5)\nprint(result)  # 8\n\ndef is_even(n):\n    return n % 2 == 0\n\nprint(is_even(4))  # True\nprint(is_even(7))  # False` }
-    ],
+    id: 4, label: "함수", icon: "🔧",
+    learnHTML: () => `
+      ${callout('info','💡','<strong>함수</strong>는 특정 기능을 수행하는 코드를 별도로 묶어두고 필요할 때 호출해 사용합니다.<br><strong>함수명, 매개변수, 명령문, 반환값</strong>으로 구성됩니다.')}
+
+      ${subtitle('① 함수의 종류')}
+      <div class="concept-cards">
+        <div class="concept-card green"><h4>📦 내장 함수</h4><p><code>print()</code>, <code>input()</code>, <code>int()</code>, <code>len()</code>, <code>abs()</code>, <code>max()</code> 등 파이썬이 기본 제공</p></div>
+        <div class="concept-card blue"><h4>📚 외장 함수</h4><p><code>import random</code> 등 모듈을 가져와 사용하는 함수</p></div>
+        <div class="concept-card purple"><h4>✏️ 사용자 정의</h4><p>직접 <code>def</code>로 정의해서 사용하는 함수. 코드 재사용성 향상!</p></div>
+      </div>
+      ${endSection}
+
+      ${subtitle('② 함수 정의 & 호출')}
+      ${codeBlock('함수 기본 구조.py', `<span class="kw">def</span> <span class="fn">greet</span>(<span class="var">name</span>):
+    <span class="fn">print</span>(<span class="str">"안녕하세요,"</span>, <span class="var">name</span>, <span class="str">"님!"</span>)
+
+<span class="fn">greet</span>(<span class="str">"민수"</span>)   <span class="cmt"># → 안녕하세요, 민수 님!</span>
+<span class="fn">greet</span>(<span class="str">"지영"</span>)   <span class="cmt"># → 안녕하세요, 지영 님!</span>
+
+<span class="cmt"># return으로 결과값 반환</span>
+<span class="kw">def</span> <span class="fn">add</span>(<span class="var">a</span>, <span class="var">b</span>):
+    <span class="kw">return</span> <span class="var">a</span> + <span class="var">b</span>
+
+<span class="var">result</span> = <span class="fn">add</span>(<span class="num">5</span>, <span class="num">7</span>)
+<span class="fn">print</span>(<span class="str">"결과:"</span>, <span class="var">result</span>)   <span class="cmt"># → 결과: 12</span>`)}
+      ${endSection}
+
+      ${subtitle('③ 지역변수 vs 전역변수')}
+      <div class="concept-cards">
+        <div class="concept-card orange"><h4>🔴 지역변수 (Local)</h4><p>함수 <strong>내부</strong>에서 선언된 변수. 함수 안에서만 사용 가능하며, 함수 종료 시 제거됩니다.</p></div>
+        <div class="concept-card blue"><h4>🔵 전역변수 (Global)</h4><p>함수 <strong>외부</strong>에서 선언된 변수. 함수 안에서 값을 변경하려면 <code>global</code> 키워드 필요.</p></div>
+      </div>
+      ${codeBlock('global 키워드.py', `<span class="var">count</span> = <span class="num">0</span>    <span class="cmt"># 전역변수</span>
+
+<span class="kw">def</span> <span class="fn">increase</span>():
+    <span class="kw">global</span> <span class="var">count</span>   <span class="cmt"># 전역변수 사용 선언</span>
+    <span class="var">count</span> += <span class="num">1</span>
+
+<span class="fn">increase</span>()
+<span class="fn">increase</span>()
+<span class="fn">print</span>(<span class="var">count</span>)    <span class="cmt"># → 2</span>`)}
+      ${endSection}
+
+      ${subtitle('④ 함수 활용 — 숫자 맞히기 게임')}
+      ${codeBlock('숫자 맞히기 게임.py', `<span class="kw">import</span> <span class="var">random</span>
+
+<span class="kw">def</span> <span class="fn">게임</span>():
+    <span class="var">정답</span> = <span class="var">random</span>.randint(<span class="num">1</span>, <span class="num">100</span>)
+    <span class="var">시도횟수</span> = <span class="num">0</span>
+    <span class="fn">print</span>(<span class="str">"숫자 맞히기 게임 시작!"</span>)
+    <span class="kw">while</span> <span class="kw">True</span>:
+        <span class="var">추측</span> = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"1~100 숫자 입력: "</span>))
+        <span class="var">시도횟수</span> += <span class="num">1</span>
+        <span class="kw">if</span> <span class="var">추측</span> < <span class="var">정답</span>: <span class="fn">print</span>(<span class="str">"너무 작아요!"</span>)
+        <span class="kw">elif</span> <span class="var">추측</span> > <span class="var">정답</span>: <span class="fn">print</span>(<span class="str">"너무 커요!"</span>)
+        <span class="kw">else</span>:
+            <span class="fn">print</span>(f<span class="str">"정답! {시도횟수}번 만에 맞혔습니다."</span>)
+            <span class="kw">break</span>
+
+<span class="fn">게임</span>()`)}
+      ${endSection}
+    `,
     exercise: { q: "두 수를 매개변수로 받아 더 큰 수를 반환하는 함수 max_num(a, b)을 작성하고, 몇 가지 경우를 테스트해 보세요.", hint: "def max_num(a, b): 로 시작하고 if a > b: return a, else: return b 로 처리해보세요." }
   },
+
+  /* ══ 05. 리스트 ══ */
   {
-    id: 5, label: "리스트", basicsAnchor: "#data",
-    sections: [
-      { title: "리스트 기본 사용법", desc: "리스트는 [ ] 안에 여러 값을 저장합니다. 인덱스는 0부터 시작합니다.", code: `numbers = [10, 20, 30, 40, 50]\n\nprint(numbers[0])   # 10  (첫 번째)\nprint(numbers[-1])  # 50  (마지막)\nprint(len(numbers)) # 5   (길이)\n\nnumbers.append(60)  # 추가\nnumbers.remove(30)  # 삭제\nprint(numbers)` },
-      { title: "리스트 슬라이싱", desc: "콜론(:)으로 리스트의 일부를 잘라낼 수 있습니다.", code: `data = [1, 2, 3, 4, 5]\n\nprint(data[1:3])   # [2, 3]\nprint(data[:2])    # [1, 2]\nprint(data[2:])    # [3, 4, 5]\nprint(data[::-1])  # [5, 4, 3, 2, 1] (역순)` }
-    ],
+    id: 5, label: "리스트", icon: "📋",
+    learnHTML: () => `
+      ${callout('info','💡','<strong>리스트</strong>는 <code>[ ]</code> 안에 여러 값을 순서대로 저장합니다.<br>인덱스는 <strong>0부터</strong> 시작하며, 값을 추가·수정·삭제할 수 있습니다.')}
+
+      ${subtitle('① 리스트 기본 조작')}
+      ${codeBlock('리스트 기본.py', `<span class="var">T_size</span> = [<span class="num">95</span>, <span class="num">85</span>, <span class="num">100</span>, <span class="num">95</span>, <span class="num">90</span>]
+
+<span class="cmt"># 인덱스로 접근 (0부터 시작)</span>
+<span class="fn">print</span>(<span class="var">T_size</span>[<span class="num">0</span>])    <span class="cmt"># → 95  (1번 학생)</span>
+<span class="fn">print</span>(<span class="var">T_size</span>[-<span class="num">1</span>])   <span class="cmt"># → 90  (마지막)</span>
+<span class="fn">print</span>(<span class="fn">len</span>(<span class="var">T_size</span>))  <span class="cmt"># → 5   (길이)</span>
+
+<span class="cmt"># 값 수정</span>
+<span class="var">T_size</span>[<span class="num">0</span>] = <span class="num">100</span>
+
+<span class="cmt"># 값 추가 / 삭제</span>
+<span class="var">T_size</span>.append(<span class="num">95</span>)
+<span class="var">T_size</span>.remove(<span class="num">85</span>)
+<span class="fn">print</span>(<span class="var">T_size</span>)`)}
+      ${endSection}
+
+      ${subtitle('② 리스트 슬라이싱')}
+      ${codeBlock('슬라이싱.py', `<span class="var">data</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+
+<span class="fn">print</span>(<span class="var">data</span>[<span class="num">1</span>:<span class="num">3</span>])   <span class="cmt"># → [2, 3]</span>
+<span class="fn">print</span>(<span class="var">data</span>[:<span class="num">2</span>])    <span class="cmt"># → [1, 2]</span>
+<span class="fn">print</span>(<span class="var">data</span>[<span class="num">2</span>:])    <span class="cmt"># → [3, 4, 5]</span>
+<span class="fn">print</span>(<span class="var">data</span>[::-<span class="num">1</span>])  <span class="cmt"># → [5, 4, 3, 2, 1] (역순)</span>`)}
+      ${endSection}
+
+      ${subtitle('③ 2차원 리스트')}
+      ${callout('tip','📌','여러 개의 1차원 데이터가 모이면 <strong>2차원 데이터</strong>가 됩니다. 행(row)과 열(column)로 표현합니다.')}
+      ${codeBlock('2차원 리스트.py', `<span class="cmt"># 6×6 크기의 0으로 채워진 2차원 리스트</span>
+<span class="var">maps</span> = [[<span class="num">0</span> <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">6</span>)] <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">6</span>)]
+
+<span class="cmt"># 행[row], 열[col]로 접근</span>
+<span class="var">maps</span>[<span class="num">2</span>][<span class="num">0</span>] = <span class="num">1</span>   <span class="cmt"># 3행 1열의 값 변경</span>
+
+<span class="cmt"># 2중 for문으로 전체 출력</span>
+<span class="kw">for</span> <span class="var">row</span> <span class="kw">in</span> <span class="var">maps</span>:
+    <span class="kw">for</span> <span class="var">cell</span> <span class="kw">in</span> <span class="var">row</span>:
+        <span class="fn">print</span>(<span class="str">'■'</span> <span class="kw">if</span> <span class="var">cell</span> <span class="kw">else</span> <span class="str">'□'</span>, end=<span class="str">''</span>)
+    <span class="fn">print</span>()`)}
+      ${endSection}
+    `,
     exercise: { q: "5개의 숫자가 담긴 리스트를 만들고, 리스트의 합계, 최댓값, 최솟값을 각각 출력하는 코드를 작성하세요.", hint: "sum(), max(), min() 내장 함수를 활용해 보세요." }
   },
+
+  /* ══ 06. 딕셔너리 ══ */
   {
-    id: 6, label: "딕셔너리", basicsAnchor: "#data",
-    sections: [
-      { title: "딕셔너리 기본", desc: "딕셔너리는 키(key): 값(value) 쌍으로 데이터를 저장합니다.", code: `student = {\n    "name": "홍길동",\n    "age": 20,\n    "grade": "A"\n}\n\nprint(student["name"])  # 홍길동\nstudent["score"] = 95\nprint(student)` },
-      { title: "딕셔너리 메서드", desc: "keys(), values(), items()로 딕셔너리의 내용을 순회할 수 있습니다.", code: `info = {"a": 1, "b": 2, "c": 3}\n\nfor key, val in info.items():\n    print(f"{key}: {val}")` }
-    ],
+    id: 6, label: "딕셔너리", icon: "📖",
+    learnHTML: () => `
+      ${callout('info','💡','<strong>딕셔너리</strong>는 <code>키(key): 값(value)</code> 쌍으로 데이터를 저장합니다.<br>키로 값을 빠르게 찾을 수 있습니다.')}
+
+      ${subtitle('① 딕셔너리 기본 조작')}
+      ${codeBlock('딕셔너리 기본.py', `<span class="var">T_size</span> = {<span class="str">'남비'</span>:<span class="num">95</span>, <span class="str">'미조'</span>:<span class="num">85</span>, <span class="str">'민지'</span>:<span class="num">100</span>}
+
+<span class="cmt"># 키로 값 가져오기</span>
+<span class="fn">print</span>(<span class="var">T_size</span>[<span class="str">'남비'</span>])     <span class="cmt"># → 95</span>
+
+<span class="cmt"># 값 수정</span>
+<span class="var">T_size</span>[<span class="str">'남비'</span>] = <span class="num">100</span>
+
+<span class="cmt"># 새 키:값 추가</span>
+<span class="var">T_size</span>[<span class="str">'새우'</span>] = <span class="num">105</span>
+
+<span class="fn">print</span>(<span class="var">T_size</span>)`)}
+      ${endSection}
+
+      ${subtitle('② 딕셔너리 메서드')}
+      <table class="data-table">
+        <thead><tr><th>메서드</th><th>반환 값</th><th>예시</th></tr></thead>
+        <tbody>
+          <tr><td><code>.keys()</code></td><td>키만 반환</td><td><code>for k in d.keys():</code></td></tr>
+          <tr><td><code>.values()</code></td><td>값만 반환</td><td><code>for v in d.values():</code></td></tr>
+          <tr><td><code>.items()</code></td><td>(키, 값) 쌍 반환</td><td><code>for k, v in d.items():</code></td></tr>
+        </tbody>
+      </table>
+      ${codeBlock('딕셔너리 순회.py', `<span class="var">menu</span> = {<span class="str">'아메리카노'</span>:<span class="num">4000</span>, <span class="str">'라떼'</span>:<span class="num">4500</span>, <span class="str">'모카'</span>:<span class="num">5000</span>}
+
+<span class="kw">for</span> <span class="var">name</span>, <span class="var">price</span> <span class="kw">in</span> <span class="var">menu</span>.items():
+    <span class="fn">print</span>(f<span class="str">"{name}: {price}원"</span>)`)}
+      <div class="output-box">
+        <div class="output-label">▶ 실행 결과</div>
+        아메리카노: 4000원<br>라떼: 4500원<br>모카: 5000원
+      </div>
+      ${endSection}
+
+      ${subtitle('③ 딕셔너리 활용')}
+      ${codeBlock('딕셔너리 활용.py', `<span class="var">student</span> = {
+    <span class="str">"name"</span>: <span class="str">"홍길동"</span>,
+    <span class="str">"age"</span>: <span class="num">20</span>,
+    <span class="str">"grade"</span>: <span class="str">"A"</span>,
+    <span class="str">"score"</span>: <span class="num">95</span>
+}
+
+<span class="cmt"># 전체 정보 출력</span>
+<span class="kw">for</span> <span class="var">key</span>, <span class="var">val</span> <span class="kw">in</span> <span class="var">student</span>.items():
+    <span class="fn">print</span>(f<span class="str">"{key}: {val}"</span>)
+
+<span class="cmt"># 특정 값 조회</span>
+<span class="fn">print</span>(<span class="str">"이름:"</span>, <span class="var">student</span>[<span class="str">"name"</span>])`)}
+      ${endSection}
+    `,
     exercise: { q: "본인의 정보(이름, 나이, 취미, 좋아하는 색)를 딕셔너리로 만들고, for문으로 모든 키와 값을 출력하는 코드를 작성하세요.", hint: "info = {'name': ..., ...} 를 만들고 for k, v in info.items(): 로 순회해보세요." }
   }
 ];
 
+/* ─────────────────────────────────────────
+   상태
+───────────────────────────────────────── */
 let currentLesson = 0, currentTab = 'learn', showHint = false;
 
+/* ─────────────────────────────────────────
+   인터랙션
+───────────────────────────────────────── */
+function copyCode(id, btn) {
+  const pre = document.getElementById(id);
+  const text = pre ? pre.innerText : '';
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ 복사됨';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => {
+    btn.textContent = '실패';
+    setTimeout(() => { btn.textContent = '복사'; }, 1500);
+  });
+}
+
+function toggleSection(el) {
+  el.classList.toggle('collapsed');
+  const body = el.nextElementSibling;
+  if (body && body.classList.contains('collapsible-body')) {
+    if (body.classList.contains('collapsed')) {
+      body.style.maxHeight = body.scrollHeight + 'px';
+      body.classList.remove('collapsed');
+    } else {
+      body.style.maxHeight = body.scrollHeight + 'px';
+      requestAnimationFrame(() => { body.classList.add('collapsed'); });
+    }
+  }
+}
+
+function initCollapsibles() {
+  document.querySelectorAll('.collapsible-body').forEach(body => {
+    body.style.maxHeight = body.scrollHeight + 'px';
+  });
+}
+
+/* ─────────────────────────────────────────
+   렌더링
+───────────────────────────────────────── */
 function renderSidebar() {
   document.getElementById('lesson-list').innerHTML = lessons.map((l, i) => `
     <div class="lesson-item ${i===currentLesson?'active':''}" onclick="selectLesson(${i})">
-      <div class="lesson-icon">${i+1}</div>
+      <div class="lesson-icon">${l.icon}</div>
       <span class="lesson-label">${l.label}</span>
     </div>`).join('');
 }
 
 function switchTab(tab) {
   currentTab = tab;
-  document.getElementById('tab-learn').className = 'tab-btn'+(tab==='learn'?' active':'');
-  document.getElementById('tab-concept').className = 'tab-btn'+(tab==='concept'?' active':'');
-  document.getElementById('tab-exercise').className = 'tab-btn'+(tab==='exercise'?' active':'');
+  document.getElementById('tab-learn').className = 'tab-btn' + (tab==='learn' ? ' active' : '');
+  document.getElementById('tab-exercise').className = 'tab-btn' + (tab==='exercise' ? ' active' : '');
   renderContent();
 }
 
 function selectLesson(i) {
   currentLesson = i; showHint = false;
-  document.getElementById('main-content').classList.remove('no-pad');
   renderSidebar(); switchTab('learn');
 }
-
-function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function renderContent() {
   const lesson = lessons[currentLesson];
   const el = document.getElementById('main-content');
-  if (currentTab === 'concept') {
-    el.classList.add('no-pad');
-    el.innerHTML = `<iframe src="/python_basics.html${lesson.basicsAnchor}" title="개념 정리"></iframe>`;
-    return;
-  }
-  el.classList.remove('no-pad');
+
   if (currentTab === 'learn') {
     el.innerHTML = `
-      <span class="badge">단원 ${currentLesson+1} / ${lessons.length}</span>
-      <div class="lesson-title">${lesson.label}</div>
-      ${lesson.sections.map(s=>`
-        <div class="section-block">
-          <div class="section-title">${s.title}</div>
-          <div class="section-desc">${s.desc}</div>
-          <pre class="code-block">${esc(s.code)}</pre>
-        </div>`).join('')}
+      <span class="lesson-badge">단원 ${currentLesson+1} / ${lessons.length}</span>
+      <div class="lesson-title">${lesson.icon} ${lesson.label}</div>
+      ${lesson.learnHTML()}
       <div class="next-btn-wrap">
-        <button class="primary" onclick="switchTab('concept')">📖 개념 정리 보기 →</button>
-        <button onclick="switchTab('exercise')" style="margin-left:8px">연습 문제 풀기 →</button>
+        <button class="primary" onclick="switchTab('exercise')">연습 문제 풀기 →</button>
       </div>`;
+    setTimeout(initCollapsibles, 10);
   } else {
     el.innerHTML = `
-      <span class="badge">연습 문제</span>
-      <div class="lesson-title">${lesson.label}</div>
+      <span class="badge">✏️ 연습 문제</span>
+      <div class="lesson-title">${lesson.icon} ${lesson.label}</div>
       <div class="q-box">${lesson.exercise.q}</div>
       <div id="hint-area" style="display:${showHint?'block':'none'}">
         <div class="hint-box">💡 힌트: ${lesson.exercise.hint}</div>
@@ -210,7 +713,7 @@ async function submitCode() {
   const code = document.getElementById('student-code')?.value.trim();
   if (!code) return;
   const area = document.getElementById('feedback-area');
-  area.innerHTML = '<div class="loading-box">AI 선생님이 코드를 확인하고 있습니다...</div>';
+  area.innerHTML = '<div class="loading-box">🤖 AI 선생님이 코드를 확인하고 있습니다...</div>';
   const lesson = lessons[currentLesson];
   try {
     const res = await fetch('/api/chat', {
@@ -228,7 +731,7 @@ async function submitCode() {
       return;
     }
     const text = data.content?.find(b=>b.type==='text')?.text || '피드백을 불러올 수 없습니다.';
-    area.innerHTML = `<div class="feedback-box"><div class="feedback-label">AI 선생님 피드백</div><div class="feedback-text">${text.replace(/\n/g,'<br>')}</div></div>`;
+    area.innerHTML = `<div class="feedback-box"><div class="feedback-label">🎓 AI 선생님 피드백</div><div class="feedback-text">${text.replace(/\n/g,'<br>')}</div></div>`;
   } catch(e) {
     area.innerHTML = `<div class="error-box">오류: ${e.message}</div>`;
   }
