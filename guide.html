@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>웹 프로젝트 배포 가이드</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
+    .page { max-width: 860px; margin: 0 auto; padding: 40px 16px 80px; }
+    h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .subtitle { font-size: 14px; color: #666; margin-bottom: 36px; }
+
+    /* 탭 */
+    .tabs { display: flex; border-bottom: 1px solid #e0e0e0; margin-bottom: 32px; }
+    .tab-btn { border: none; background: none; padding: 12px 0; margin-right: 28px; font-size: 14px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; font-weight: 400; font-family: inherit; }
+    .tab-btn.active { color: #1a1a1a; border-bottom: 2px solid #1a1a1a; font-weight: 600; }
+
+    /* 스텝 카드 */
+    .step-list { display: flex; flex-direction: column; gap: 16px; }
+    .step-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; }
+    .step-header { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; user-select: none; }
+    .step-num { width: 32px; height: 32px; border-radius: 8px; background: #1a1a1a; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .step-num.once { background: #e0e0e0; color: #888; }
+    .step-title { font-size: 15px; font-weight: 600; flex: 1; }
+    .step-badge { font-size: 11px; padding: 3px 9px; border-radius: 99px; background: #f0f0f0; color: #888; }
+    .step-badge.always { background: #e8f5e9; color: #2e7d32; }
+    .chevron { font-size: 12px; color: #aaa; transition: transform 0.2s; }
+    .step-card.open .chevron { transform: rotate(180deg); }
+    .step-body { display: none; padding: 0 20px 20px; border-top: 1px solid #f0f0f0; }
+    .step-card.open .step-body { display: block; }
+    .step-desc { font-size: 13px; color: #555; line-height: 1.75; margin: 14px 0 12px; }
+    pre.code-block { background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: 12px; line-height: 1.7; overflow-x: auto; color: #1a1a1a; margin-bottom: 12px; position: relative; }
+    .copy-btn { position: absolute; top: 8px; right: 10px; font-size: 11px; padding: 3px 8px; border-radius: 5px; border: 1px solid #ddd; background: #fff; cursor: pointer; color: #888; font-family: inherit; }
+    .copy-btn:hover { background: #f0f0f0; }
+    .note { font-size: 12px; color: #888; background: #fafafa; border-left: 3px solid #ddd; padding: 8px 12px; border-radius: 0 6px 6px 0; margin-top: 8px; }
+
+    /* 오류 카드 */
+    .error-list { display: flex; flex-direction: column; gap: 16px; }
+    .error-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; }
+    .error-header { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; user-select: none; }
+    .error-icon { width: 32px; height: 32px; border-radius: 8px; background: #fff0f0; border: 1px solid #ffc0c0; color: #c00; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .error-title { font-size: 14px; font-weight: 600; flex: 1; }
+    .error-body { display: none; padding: 0 20px 20px; border-top: 1px solid #f0f0f0; }
+    .error-card.open .error-body { display: block; }
+    .error-card.open .chevron { transform: rotate(180deg); }
+    .symptom-box { background: #fff8f8; border: 1px solid #ffd0d0; border-radius: 8px; padding: 10px 14px; font-family: 'Fira Code', monospace; font-size: 12px; color: #c00; line-height: 1.6; margin: 14px 0 10px; }
+    .cause { font-size: 13px; color: #555; margin-bottom: 10px; }
+    .cause strong { color: #1a1a1a; }
+    .fix-label { font-size: 12px; font-weight: 600; color: #2e7d32; margin-bottom: 6px; }
+    .fix-text { font-size: 13px; color: #555; line-height: 1.75; margin-bottom: 8px; }
+
+    /* 체크리스트 */
+    .checklist { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 24px; }
+    .checklist h2 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+    .check-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; cursor: pointer; }
+    .check-item:last-child { border-bottom: none; }
+    .checkbox { width: 20px; height: 20px; border-radius: 6px; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+    .check-item.checked .checkbox { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
+    .check-label { font-size: 13px; color: #1a1a1a; }
+    .check-item.checked .check-label { color: #aaa; text-decoration: line-through; }
+    .reset-btn { margin-top: 16px; padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; cursor: pointer; color: #888; font-family: inherit; }
+    .reset-btn:hover { background: #f0f0f0; }
+
+    .section-panel { display: none; }
+    .section-panel.active { display: block; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <h1>웹 프로젝트 배포 가이드</h1>
+  <p class="subtitle">코드 작성 → GitHub 커밋 → Vercel 배포까지의 전체 절차와 오류 대처법</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('routine')">배포 루틴</button>
+    <button class="tab-btn" onclick="switchTab('errors')">오류 대처법</button>
+    <button class="tab-btn" onclick="switchTab('checklist')">체크리스트</button>
+  </div>
+
+  <!-- 배포 루틴 -->
+  <div class="section-panel active" id="panel-routine">
+    <div class="step-list">
+
+      <div class="step-card open" id="step-0">
+        <div class="step-header" onclick="toggleStep('step-0')">
+          <div class="step-num once">0</div>
+          <div class="step-title">Git 전역 설정</div>
+          <span class="step-badge">최초 1회</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-body">
+          <p class="step-desc">컴퓨터에서 처음 Git을 사용할 때 이름과 이메일을 등록합니다. 한 번만 하면 됩니다.</p>
+          <pre class="code-block"><button class="copy-btn" onclick="copy(this)">복사</button>git config --global user.name "본인이름"
+git config --global user.email "이메일@gmail.com"</pre>
+        </div>
+      </div>
+
+      <div class="step-card" id="step-1">
+        <div class="step-header" onclick="toggleStep('step-1')">
+          <div class="step-num once">1</div>
+          <div class="step-title">프로젝트 폴더 Git 초기화 + GitHub 연결</div>
+          <span class="step-badge">최초 1회</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-body">
+          <p class="step-desc">GitHub에서 새 리포지토리를 만든 뒤, 로컬 폴더와 연결합니다.</p>
+          <pre class="code-block"><button class="copy-btn" onclick="copy(this)">복사</button>git init
+git remote add origin https://github.com/계정명/리포지토리명.git</pre>
+          <div class="note">GitHub → New repository → 이름 입력 → Create repository 후 진행</div>
+        </div>
+      </div>
+
+      <div class="step-card" id="step-2">
+        <div class="step-header" onclick="toggleStep('step-2')">
+          <div class="step-num">2</div>
+          <div class="step-title">코드 작성 후 GitHub에 올리기</div>
+          <span class="step-badge always">매번</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-body">
+          <p class="step-desc">파일을 수정할 때마다 아래 세 명령어를 순서대로 실행합니다.</p>
+          <pre class="code-block"><button class="copy-btn" onclick="copy(this)">복사</button>git add .
+git commit -m "변경 내용 설명"
+git push</pre>
+          <div class="note">첫 push는 <code>git push -u origin main</code> 으로 실행</div>
+        </div>
+      </div>
+
+      <div class="step-card" id="step-3">
+        <div class="step-header" onclick="toggleStep('step-3')">
+          <div class="step-num once">3</div>
+          <div class="step-title">Vercel 배포</div>
+          <span class="step-badge">최초 1회</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-body">
+          <p class="step-desc">Vercel과 GitHub 리포지토리를 연결하면, 이후 push할 때마다 자동 배포됩니다.</p>
+          <ol style="font-size:13px;color:#555;line-height:2;padding-left:18px;">
+            <li>vercel.com → GitHub 계정으로 로그인</li>
+            <li><strong>Add New Project</strong> 클릭</li>
+            <li>리포지토리 선택 → <strong>Deploy</strong></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="step-card" id="step-4">
+        <div class="step-header" onclick="toggleStep('step-4')">
+          <div class="step-num once">4</div>
+          <div class="step-title">환경변수(API 키) 설정</div>
+          <span class="step-badge">최초 1회</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-body">
+          <p class="step-desc">API 키처럼 외부에 노출되면 안 되는 값은 Vercel 환경변수로 설정합니다.</p>
+          <ol style="font-size:13px;color:#555;line-height:2;padding-left:18px;">
+            <li>Vercel 프로젝트 → <strong>Settings</strong> → <strong>Environment Variables</strong></li>
+            <li>Name: <code>ANTHROPIC_API_KEY</code> / Value: API 키 입력</li>
+            <li><strong>Save</strong> 후 → <strong>Deployments</strong> → <strong>Redeploy</strong></li>
+          </ol>
+          <div class="note">코드에서는 <code>process.env.ANTHROPIC_API_KEY</code>로 참조</div>
+        </div>
+      </div>
+
+      <div class="step-card" id="step-5">
+        <div class="step-header" onclick="toggleStep('step-5')">
+          <div class="step-num">5</div>
+          <div class="step-title">이후 업데이트</div>
+          <span class="step-badge always">매번</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-body">
+          <p class="step-desc">2단계와 동일합니다. push만 하면 Vercel이 자동으로 재배포합니다.</p>
+          <pre class="code-block"><button class="copy-btn" onclick="copy(this)">복사</button>git add .
+git commit -m "수정 내용"
+git push</pre>
+          <div class="note">Vercel 대시보드에서 별도로 재배포할 필요 없음</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 오류 대처법 -->
+  <div class="section-panel" id="panel-errors">
+    <div class="error-list">
+
+      <div class="error-card" id="err-0">
+        <div class="error-header" onclick="toggleStep('err-0')">
+          <div class="error-icon">!</div>
+          <div class="error-title">명령어 오타 (gir, gi 등)</div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="error-body">
+          <div class="symptom-box">'gir' 용어가 cmdlet... 인식되지 않습니다</div>
+          <p class="cause"><strong>원인:</strong> git 명령어 철자 오류</p>
+          <div class="fix-label">대처법</div>
+          <p class="fix-text">명령어를 다시 확인하고 정확히 입력하세요. <code>git</code>은 g-i-t 세 글자입니다.</p>
+        </div>
+      </div>
+
+      <div class="error-card" id="err-1">
+        <div class="error-header" onclick="toggleStep('err-1')">
+          <div class="error-icon">!</div>
+          <div class="error-title">GitHub 리포지토리를 찾을 수 없음</div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="error-body">
+          <div class="symptom-box">remote: Repository not found.
+fatal: repository '...' not found</div>
+          <p class="cause"><strong>원인:</strong> GitHub에 리포지토리를 먼저 만들지 않고 push했거나, 주소가 잘못됨</p>
+          <div class="fix-label">대처법</div>
+          <p class="fix-text">GitHub에서 리포지토리를 먼저 생성한 뒤 push하세요. 주소도 정확한지 확인하세요.</p>
+          <pre class="code-block"><button class="copy-btn" onclick="copy(this)">복사</button>git remote -v  # 현재 연결된 주소 확인</pre>
+        </div>
+      </div>
+
+      <div class="error-card" id="err-2">
+        <div class="error-header" onclick="toggleStep('err-2')">
+          <div class="error-icon">!</div>
+          <div class="error-title">push 거부 (원격에 로컬에 없는 커밋 존재)</div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="error-body">
+          <div class="symptom-box">Updates were rejected because the remote contains work
+that you do not have locally</div>
+          <p class="cause"><strong>원인:</strong> GitHub에서 직접 파일을 생성했거나 다른 곳에서 push한 경우 (예: README 자동 생성)</p>
+          <div class="fix-label">대처법</div>
+          <pre class="code-block"><button class="copy-btn" onclick="copy(this)">복사</button>git pull --rebase origin main
+git push</pre>
+        </div>
+      </div>
+
+      <div class="error-card" id="err-3">
+        <div class="error-header" onclick="toggleStep('err-3')">
+          <div class="error-icon">!</div>
+          <div class="error-title">파일이 빈 채로 배포됨</div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="error-body">
+          <div class="symptom-box">기능이 동작하지 않음 / API 오류 발생</div>
+          <p class="cause"><strong>원인:</strong> 파일을 만들었지만 <code>git add</code>를 하지 않아 빈 파일이 GitHub에 올라감</p>
+          <div class="fix-label">대처법</div>
+          <pre class="code-block"><button class="copy-btn" onclick="copy(this)">복사</button>git status          # 스테이징 안 된 파일 확인
+git add 파일명
+git commit -m "파일 추가"
+git push</pre>
+          <div class="note">예방: push 전에 항상 git status로 확인</div>
+        </div>
+      </div>
+
+      <div class="error-card" id="err-4">
+        <div class="error-header" onclick="toggleStep('err-4')">
+          <div class="error-icon">!</div>
+          <div class="error-title">API를 프론트엔드에서 직접 호출</div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="error-body">
+          <div class="symptom-box">CORS 오류 또는 API 키 노출 위험</div>
+          <p class="cause"><strong>원인:</strong> HTML/JS에서 외부 API를 직접 호출하면 브라우저 보안 정책(CORS)에 막히고 API 키가 노출됨</p>
+          <div class="fix-label">대처법</div>
+          <pre class="code-block"><button class="copy-btn" onclick="copy(this)">복사</button>// 잘못된 방법
+fetch('https://api.anthropic.com/v1/messages', ...)
+
+// 올바른 방법: 서버 프록시를 거침
+fetch('/api/chat', ...)</pre>
+          <div class="note">api/ 폴더에 서버 함수를 만들고 API 키는 환경변수로 관리</div>
+        </div>
+      </div>
+
+      <div class="error-card" id="err-5">
+        <div class="error-header" onclick="toggleStep('err-5')">
+          <div class="error-icon">!</div>
+          <div class="error-title">잘못된 AI 모델명</div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="error-body">
+          <div class="symptom-box">API 오류 / 피드백이 오지 않음</div>
+          <p class="cause"><strong>원인:</strong> 존재하지 않는 모델 ID를 사용</p>
+          <div class="fix-label">대처법</div>
+          <pre class="code-block"><button class="copy-btn" onclick="copy(this)">복사</button>// 올바른 모델명 예시
+model: 'claude-3-5-sonnet-20241022'</pre>
+          <div class="note">Anthropic 공식 문서에서 현재 사용 가능한 모델명 확인</div>
+        </div>
+      </div>
+
+      <div class="error-card" id="err-6">
+        <div class="error-header" onclick="toggleStep('err-6')">
+          <div class="error-icon">!</div>
+          <div class="error-title">환경변수 추가 후 여전히 인증 오류</div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="error-body">
+          <div class="symptom-box">API 인증 실패 (401 Unauthorized)</div>
+          <p class="cause"><strong>원인:</strong> 환경변수는 다음 배포부터 적용됨. 추가 후 Redeploy를 하지 않으면 반영 안 됨</p>
+          <div class="fix-label">대처법</div>
+          <ol style="font-size:13px;color:#555;line-height:2;padding-left:18px;">
+            <li>Vercel → <strong>Deployments</strong> 탭 클릭</li>
+            <li>최신 배포 옆 <strong>...</strong> → <strong>Redeploy</strong></li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 체크리스트 -->
+  <div class="section-panel" id="panel-checklist">
+    <div class="checklist">
+      <h2>배포 전 체크리스트</h2>
+      <div id="check-list"></div>
+      <button class="reset-btn" onclick="resetChecks()">초기화</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const checks = [
+    'git add . 로 변경 파일을 스테이징했는가?',
+    'git commit -m "..." 으로 커밋 메시지를 작성했는가?',
+    'git push 로 GitHub에 올렸는가?',
+    'API 키 등 환경변수를 Vercel에 설정했는가?',
+    'API는 /api/... 프록시를 통해 호출하는가?',
+    '코드에 API 키가 직접 노출되어 있지 않은가?',
+    '모델명이 유효한 이름인가?',
+    '환경변수 추가 후 Redeploy를 했는가?',
+  ];
+
+  function renderChecks() {
+    const saved = JSON.parse(localStorage.getItem('deploy-checks') || '[]');
+    document.getElementById('check-list').innerHTML = checks.map((c, i) => `
+      <div class="check-item ${saved.includes(i) ? 'checked' : ''}" onclick="toggleCheck(${i})">
+        <div class="checkbox">${saved.includes(i) ? '✓' : ''}</div>
+        <span class="check-label">${c}</span>
+      </div>`).join('');
+  }
+
+  function toggleCheck(i) {
+    const saved = JSON.parse(localStorage.getItem('deploy-checks') || '[]');
+    const idx = saved.indexOf(i);
+    if (idx === -1) saved.push(i); else saved.splice(idx, 1);
+    localStorage.setItem('deploy-checks', JSON.stringify(saved));
+    renderChecks();
+  }
+
+  function resetChecks() {
+    localStorage.removeItem('deploy-checks');
+    renderChecks();
+  }
+
+  function toggleStep(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', ['routine','errors','checklist'][i] === tab);
+    });
+    document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  function copy(btn) {
+    const code = btn.parentElement.innerText.replace('복사', '').trim();
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '완료';
+      setTimeout(() => btn.textContent = '복사', 1500);
+    });
+  }
+
+  renderChecks();
+</script>
+</body>
+</html>
