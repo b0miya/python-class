@@ -192,16 +192,20 @@ async function submitCode() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1000,
         messages: [{ role: 'user', content: `당신은 친절한 파이썬 선생님입니다.\n\n연습 문제: ${lesson.exercise.q}\n\n학생 코드:\n\`\`\`python\n${code}\n\`\`\`\n\n아래 형식으로 한국어로 피드백해주세요 (3~5문장):\n- 코드가 문제를 올바르게 해결했는지 여부\n- 잘된 점\n- 개선할 점 또는 다른 방법 (있다면)\n- 응원의 말\n\n이모지를 2~3개 사용해서 친근하게 작성해주세요.` }]
       })
     });
     const data = await res.json();
+    if (!res.ok) {
+      area.innerHTML = `<div class="error-box">API 오류: ${data.error?.message || JSON.stringify(data)}</div>`;
+      return;
+    }
     const text = data.content?.find(b=>b.type==='text')?.text || '피드백을 불러올 수 없습니다.';
     area.innerHTML = `<div class="feedback-box"><div class="feedback-label">AI 선생님 피드백</div><div class="feedback-text">${text.replace(/\n/g,'<br>')}</div></div>`;
   } catch(e) {
-    area.innerHTML = '<div class="error-box">오류가 발생했습니다. 다시 시도해주세요.</div>';
+    area.innerHTML = `<div class="error-box">오류: ${e.message}</div>`;
   }
 }
 
